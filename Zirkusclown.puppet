@@ -1,0 +1,128 @@
+PUPPET Zirkusclown
+  LOGIN: " kommt zur Arbeit."
+  LOGOUT: " hat Feierabend."
+  APPEAR: " kommt um aufzuräumen."
+  DISAPPEAR: " hat aufgeräumt."
+  INFO: "Ich halte die Zirkusräumlichkeiten sauber."
+  OVERFLOW: HARAKIRI
+  NEWOWNER: NO
+  CITYCHAT: YES
+  CASESENSITIV: YES
+#  SAVE: "save*"
+  OWN: NO
+
+@list: listebefehle
+@start: rundgang
+
+ACTION start
+  SET HOME C177
+  SET GAMELIST "11nimmt 6nimmt 7Wonders Abluxxen AllesImEimer Atlantis Attika Attribut AufAchse Backgammon Bazaar Blockers Bluff Bohnanza BohnDuell Bruegge CafeInternational CantStop Carcassonne Cartagena CC-JaegerUndSammler Clans Crosswise Diamant Dog Doppelkopf Drachenherz Dudeln Dvonn Emerald Evolution FinstereFlure Funkenschlag GanzSchoenClever Geister Grimoria Halali HalfPintHeroes Hanse Helvetia Imhotep ImSchutzeDerBurg KingdomBuilder KingLui Kingsburg Kribbeln Ligretto Manhattan MarcoPolo Medina Meuterer NochMal NotreDame Numeri OhneFurchtUndAdel PackeisAmPol Pantheon ParisParis PiranhaPedro PuertoRico SaeulenDerErde SanJuan SanktPetersburg SantaCruz Siedler SkullKing SpaceBob Sticheln StoneAge StreetSoccer ThurnUndTaxis Tichu Tongiaki Transamerica TurnIt UmKroneUndKragen Vabanque Venedig Verflixxt Wikinger Wizard Yinsh Zatre"
+  
+  WHEN ERROR DO error
+  WHEN TIMER 3600 DO rundgang
+END
+
+ACTION listebefehle
+  -- @start Starte den Aufräumvorgang
+END
+
+# counter: Zähler für die While-Schleife
+# players: Summiert die Anzahl der gefundenen Spieler in den Räumen
+# resets: Anzahl der Räume, in denen ein Reset durchgeführt wurde
+ACTION rundgang
+  SET counter 1
+  SET players 0
+  SET resets 0
+  
+  -- Fange an aufzuräumen
+  
+  WHILE [counter] <= 180
+    BEGIN
+      SET zielraum "C177-[counter]"
+      >> /room [zielraum]              # Wechsel in den nächsten Raum
+      GETROOMINFO
+      IF [ROOM] == [zielraum]
+        BEGIN        
+          # -- Ich bin jetzt in Raum [ROOM] mit Spiel [GAME]
+		  IF LISTLENGTH [GAME] > 1
+		    BEGIN
+              DO subraeume
+            END
+		  ELSE
+		    BEGIN
+			  SET spiel [GAME]
+              DO raumreset
+            END
+        END
+      ELSE # Raum existiert nicht
+        BEGIN
+          # -- [zielraum] existiert nicht
+        END
+
+      EVAL counter = [counter] + 1
+      SLEEP 3
+    END  # END WHILE
+  
+  >> /room [HOME]
+  >> /ctell Im Zirkus spielen aktuell [players] Personen. [resets] Räume zurückgesetzt.
+  -- Im Zirkus spielen aktuell [players] Personen. [resets] Räume zurückgesetzt.
+END
+
+# Iteriert durch die Subräume eines Gebäudes mit mehreren Spielen
+# GAME, GAMELIST, players, reset müssen gesetzt sein
+ACTION subraeume
+  SET sumraum 1
+  FOR spiel IN [GAME]
+    BEGIN
+	  # -- Spiel [spiel] in Raum [zielraum]-[sumraum]
+	  >> /room [zielraum]-[sumraum]
+	  DO raumreset
+	  EVAL sumraum = [sumraum] + 1
+	END
+END
+
+# Für Spielräume: setzt zurück oder zählt Anzahl spieler
+# IN GAMELIST: Liste der Spiele
+# IN spiel: Spiel im aktuellen Raum
+# IN players: Counter für die Anzahl der Spieler 
+# IN resets: Counter für die Anzahl der zurückgesetzten Räume 
+ACTION raumreset
+  IF [spiel] INLIST [GAMELIST]
+	BEGIN
+	  DO spielerzahl
+	  IF [x] > 0
+		BEGIN
+		  # -- Hier sind die folgenden Personen [WHO]
+		  EVAL players = [players] + [x]
+		END
+	  ELSE
+		BEGIN
+		  # -- Hier ist niemand... führe reset durch.
+		  >> /reset
+		  EVAL resets = [resets] + 1
+		END
+	END
+  ELSE # Spiel nicht in Liste
+	BEGIN
+	  # -- [spiel] ist nicht in der Liste der Spiele.
+	END
+END
+
+ACTION spielerzahl
+  GETWHO                               # liefert in [WHO] eine Liste mit
+                                       # den Namen der Anwesenden
+  SET x 0                              # die Anzahl x wird zu Beginn auf 0 gesetzt.
+  FOR anwesender IN [WHO]              # Alle Namen aus der Liste
+                                       #   werden abgearbeitet.
+    BEGIN
+      GETINFO [anwesender]             # Die Infos zum Namen werden gelesen.
+      IF NOT [PUPPET]                  # Puppets werden nicht gezählt.
+        EVAL x = [x] + 1               # Für jeden Spieler wird x erhöht.
+    END
+END
+
+ACTION error
+  >> Ein Fehler ist aufgetreten ([MESSAGE])
+END
+
+PUPPETEND
