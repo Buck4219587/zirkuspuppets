@@ -1,0 +1,42 @@
+PUPPET Zirkusempfang
+
+LOGIN: " beginnt seine Arbeit."
+LOGOUT: " hat Feierabend."
+APPEAR: " taucht am Zirkuseingang auf."
+DISAPPEAR: " verschwindet in einem Zelt."
+INFO: "Ich begrüße was das Zeug hält."
+
+ACTION start
+  WHEN APPEAR * DO gruss
+END
+
+ACTION gruss
+  GETINFO [WHO]
+  IF NOT EXISTS PUPPET   # ist die Variable überhaupt belegt?
+    RETURN               # andernfalls wird die ACTION gruss abgebrochen
+  IF NOT [PUPPET]        # ein Puppet wird nicht begrüßt
+    BEGIN
+      IF [CITYNR] == 177   # jemand aus Zirkus (C177)?
+        DO OFT[RND2]     # zufällige Begüßung für OFTler
+      ELSE
+        DO FREMD[RND2]   # zufällige Begüßung für Fremde
+    END
+END
+
+ACTION OFT0
+  >> Guten Tag [TITEL] [WHO]! Willkommen im Zirkus!
+END
+
+ACTION OFT1
+  >> [TITEL] [WHO], es ist immer eine Freude, Dich zu begrüßen!
+END
+
+ACTION FREMD0
+  >> Willkommen, [TITEL] [WHO]. Ich wünsche Dir einen angenehmen Aufenthalt.
+END
+
+ACTION FREMD1
+  >> [TITEL] [WHO] aus [CITY], Was verschafft uns die Ehre?
+END
+
+PUPPETEND
