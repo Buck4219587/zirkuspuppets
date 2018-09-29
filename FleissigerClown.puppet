@@ -1,0 +1,250 @@
+PUPPET FleißigerClown 
+LOGIN: " kommt."
+LOGOUT: " geht."
+APPEAR: " kommt herein."
+DISAPPEAR: " geht hinaus."
+INFO: "Ich bin das Stadtpuppet von Zirkus :) "
+CITYCHAT: YES
+OVERFLOW: HARAKIRI
+NEWOWNER: NO
+OWN: NO
+NATION: bsw
+CASESENSITIV: YES
+SAVE: "savedieses*"
+
+
+#####################################
+ACTION start
+
+    SET Schmiede "C177-50"  
+    SET Weberei "C177-36"   
+    SET home [C177]
+    SET Motto "no"
+	SET PuppetOper "no" # immer wenn jmd online kommt "makeoper" ausführen, um denjenigen dann anzutellen
+
+
+#######		
+    WHEN MATCH "@kick" DO feierabend
+    WHEN MATCH "@oper" DO oper
+    WHEN MATCH "@info" DO info
+	
+	
+######Channel #######################
+#
+    >> /ctell /usermode quiet=off
+	
+    WHEN MATCH "-- User '*' OPERATOR gesetzt." FROM "--" DO TellOper1
+    WHEN MATCH "-- User '*' von '*' auf Opermode OPERATOR*gesetzt." FROM "--" DO TellOper2
+    WHEN MATCH "-- User '*' ist schon OPERATOR." FROM "--" DO ReqOper
+    WHEN MATCH "-- * betritt den Kanal." FROM "--" IN CTELL DO say_hi
+    WHEN MATCH "-- Motd dieses Channels:" FROM "--" IN CTELL DO Motto_gesetzt	
+	
+    >> /ctell /makeoper	
+    >> /ctell /chwho
+	
+######Zirkusclown nach 10 min starten###############################	
+
+    WHEN TIMER 600 DO Zirkusclown_starten
+	
+#####################################	
+# Aufträge 
+    WHEN MATCH "-- Es befindet sich ein Auftrag ueber * * in der *." FROM "--" IN CTELL DO bekanntgabe
+    WHEN MATCH "-- Es befindet sich immer noch ein Auftrag in der *." FROM "--" IN CTELL DO bekanntgabe1 
+    #WHEN MATCH "-- * erfuellt den Auftrag ueber * * in der *." FROM "--" IN CTELL DO produzenten
+END
+
+####################Aktionen#############################################
+
+#####################################
+ACTION bekanntgabe
+    >> /channel Schmieden/Weben-Gilde
+    SET was [SUBST3]
+    IF ( [was] == "Schmiede" )
+        >> /gtell Schmieden/Weben-Gilde Es befindet sich ein Schmiede-Auftrag in /room [Schmiede]
+    ELSE
+        >> /gtell Schmieden/Weben-Gilde Es befindet sich ein Webe-Auftrag in /room [Weberei]
+    >> /gtell Schmieden/Weben-Gilde /exit
+END
+#####################################
+
+#####################################
+ACTION bekanntgabe1
+    >> /channel Schmieden/Weben-Gilde
+    SET was [SUBST1]
+    IF ( [was] == "Schmiede" )
+        >> /gtell Schmieden/Weben-Gilde Es befindet sich ein Schmiede-Auftrag in /room [Schmiede]
+    ELSE
+        >> /gtell Schmieden/Weben-Gilde Es befindet sich ein Webe-Auftrag in /room [Weberei]
+    >> /gtell Schmieden/Weben-Gilde /exit
+END
+#####################################
+
+#####################################
+#Beenden
+ACTION feierabend
+    >> /tell [WHO] Ich mach Feierabend *winks
+    HARAKIRI
+END
+#####################################
+
+#####################################
+# Info ausgeben
+ACTION info
+    >> /tell [WHO] Mit "@kick" kannst Du mich deaktivieren (bitte nur im äußersten Notfall nutzen).
+	>> /tell [WHO] Mit "@oper" mache ich dich im StadtChannel zum Oper
+END
+#####################################
+
+
+#####################################
+#Motto
+ACTION Motto_gesetzt
+	SET Motto "yes"	
+END
+#####################################
+
+		   
+#####################################
+#Oper machen
+ACTION oper
+    >> /ctell /oper [WHO]=+Operator
+END
+#####################################
+
+
+####################################
+#Oper-Arbeit machen & danach ignorieren
+ACTION OperatorWork
+
+          IGNORE MATCH "-- User '*' OPERATOR gesetzt." FROM "--"
+          IGNORE MATCH "-- User '*' von '*' auf Opermode OPERATOR gesetzt." FROM "--"
+          IGNORE MATCH "-- User '*' ist schon OPERATOR." FROM "--"
+		  SET PuppetOper "Yes"
+
+		  # Motto nur setzen, wenn noch keins gesetzt
+          IF ( [Motto] == "no" )
+		   BEGIN
+        	>> /ctell /chmotd Willkommen und viel Spaß beim Spielen =)
+           END 
+END
+#
+#####################################
+
+####################################
+#Puppet starten
+ACTION Zirkusclown_starten
+
+	>> /puppet start Zirkusclown 
+	IGNORE TIMER
+	
+END
+#
+#####################################
+
+#####################################
+#ACTION produzenten
+#    >> /channel Schmieden/Weben-Gilde
+#    SET wer [SUBST1]
+#    SET wieviel [SUBST2]
+#    SET was [SUBST3]
+#    SET wo [SUBST4]
+#    IF [wo] == Schmiede
+#        BEGIN
+#            >> /gtell Schmieden/Weben-Gilde [wer] erfuellte den Auftrag ueber [wieviel] [was] in der Schmiede [Schmiede]. Vielen Dank!
+#        END
+#    ELSE
+#        BEGIN
+#            >> /gtell Schmieden/Weben-Gilde [wer] erfuellte den Auftrag ueber [wieviel] [was] in der Weberei [Weberei]. Vielen Dank!
+#        END
+#    >> /gtell Schmieden/Weben-Gilde /exit
+#END
+#####################################
+
+####################################
+#
+ACTION ReqOper
+	  IF [SUBST1] == FleißigerClown
+	  BEGIN
+		DO OperatorWork
+	  END
+  ELSE
+  BEGIN
+    >> /tell [SUBST1] Hi, bitte setze mich im Stadtchannel auf Operator
+    >> /tell [SUBST1] /oper FleißigerClown=+Operator  
+  END
+END
+#
+#####################################
+
+#####################################
+#Oper antellen 
+ACTION Oper_antellen
+    >> /tell [SUBST1] Hi =)
+	>> /tell [SUBST1] Bitte setze mich im Stadtchannel auf Operator.
+	>> /tell [SUBST1] /oper FleißigerClown=+Operator  
+END
+#####################################
+
+#####################################
+#Begrüßen
+ACTION say_hi
+    IF ( [SUBST1] == "mahos" )
+        BEGIN
+			>> /ctell Hello [SUBST1], have a nice time playing 
+		END	 
+    ELSE
+		BEGIN
+			IF ( [SUBST1] == "FleißigerClown" ) 
+				BEGIN
+				
+				END
+			ELSE
+				BEGIN
+					IF ([PuppetOper] == "no")
+						BEGIN
+							>> /ctell /makeoper
+						END
+					>> /ctell Hallo [SUBST1], viel Spaß beim Spielen - hab eine schöne Zeit!
+				END
+		END	
+END
+#####################################
+
+####################################
+#
+ACTION TellOper1
+      IF [SUBST1] == FleißigerClown
+      BEGIN
+        DO OperatorWork
+      END
+      ELSE
+      BEGIN
+    >> /tell [SUBST1] Hi =)
+	>> /tell [SUBST1] Bitte setze mich im Stadtchannel auf Operator.
+	>> /tell [SUBST1] /oper FleißigerClown=+Operator
+	  END
+END
+#
+#####################################
+
+
+
+####################################
+#
+ACTION TellOper2
+      IF [SUBST1] == FleißigerClown
+      BEGIN
+        DO OperatorWork
+      END
+      ELSE
+      BEGIN
+		>> /tell [SUBST2] Hi =)
+		>> /tell [SUBST2] Bitte setze mich im Stadtchannel auf Operator.
+		>> /tell [SUBST2] /oper FleißigerClown=+Operator 
+      END
+END
+#
+#####################################
+
+
+PUPPETEND
