@@ -1,4 +1,5 @@
 PUPPET Zirkusempfang
+CHARSET: "UTF-8"
 
 LOGIN: " beginnt seine Arbeit."
 LOGOUT: " hat Feierabend."
