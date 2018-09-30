@@ -1,4 +1,5 @@
 PUPPET Zirkusclown
+  CHARSET: "UTF-8"
   LOGIN: " kommt zur Arbeit."
   LOGOUT: " hat Feierabend."
   APPEAR: " kommt um aufzuräumen."
