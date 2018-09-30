@@ -1,4 +1,5 @@
-PUPPET FleißigerClown 
+PUPPET FleißigerClown
+CHARSET: "UTF-8"
 LOGIN: " kommt."
 LOGOUT: " geht."
 APPEAR: " kommt herein."
