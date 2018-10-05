@@ -138,7 +138,7 @@ ACTION roominfotopublic
   EVAL currentroomlength = LENGTH [currentroomtext]
   EVAL totallength = publength + currentroomlength
   
-  IF publength > 4500
+  IF [publength] > 4500
     BEGIN
       EVAL publiccnt = [publiccnt] + 1
     END
