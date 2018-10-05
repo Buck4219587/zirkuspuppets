@@ -134,14 +134,16 @@ END
 # publiccnt muss gesetzt sein
 ACTION roominfotopublic
   LOCAL currentroomtext = "<tr><td>[ROOM]</td><td>[NAME]</td><td>[GAME]</td><td>[OWNER]</td></tr>"
-  EVAL publength = LENGTH [PUBLIC[publiccnt]] + LENGTH [currentroomtext]
+  EVAL publength = LENGTH [PUBLIC[publiccnt]]
+  EVAL currentroomlength = LENGTH [currentroomtext]
+  EVAL totallength = publength + currentroomlength
   
   IF publength > 4500
     BEGIN
       EVAL publiccnt = [publiccnt] + 1
     END
 
-  SET PUBLIC[publiccnt] = "[PUBLIC[publiccnt]] [currentroomtext]"
+  SET PUBLIC[publiccnt] "[PUBLIC[publiccnt]] [currentroomtext]"
 END
 
 ACTION error
