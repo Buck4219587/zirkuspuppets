@@ -141,6 +141,7 @@ ACTION roominfotopublic
   IF [totallength] > 4500
     BEGIN
       EVAL publiccnt = [publiccnt] + 1
+      SET PUBLIC[publiccnt] ""
     END
 
   SET PUBLIC[publiccnt] "[PUBLIC[publiccnt]] [currentroomtext]"
