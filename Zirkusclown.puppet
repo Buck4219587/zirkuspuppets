@@ -76,9 +76,10 @@ ACTION rundgang
   SET PUBLIC[publiccnt] "</table></body></html>"
   
   WHILE [publiccnt] <= 100
-    EVAL publiccnt = [publiccnt] + 1
-    UNSET PUBLIC[publiccnt]
-  END WHILE
+    BEGIN
+      EVAL publiccnt = [publiccnt] + 1
+      UNSET PUBLIC[publiccnt]
+    END
   
   SAVEPUBLIC
   
