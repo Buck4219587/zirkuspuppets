@@ -17,7 +17,7 @@ PUPPET Zirkusclown
 
 ACTION start
   SET HOME C177
-  SET GAMELIST "11nimmt 6nimmt 7Wonders Abluxxen AllesImEimer Atlantis Attika Attribut AufAchse Backgammon Bazaar Blockers Bluff Bohnanza BohnDuell Bruegge CafeInternational CantStop Carcassonne Cartagena CastlesOfTuscany CC-JaegerUndSammler Clans CleverHochDrei Crosswise Diamant DieCrew Dizzle Dog Doppelkopf Drachenherz Dudeln Dvonn Emerald Evolution FinstereFlure Funkenschlag GanzSchoenClever Geister GoennenKoennen Grimoria Hadara Halali HalfPintHeroes Helvetia HeulDoch Imhotep ImSchutzeDerBurg Kardinal&Koenig KingdomBuilder KingLui Kingsburg Kribbeln Ligretto Manhattan Manitou MarcoPolo Medina Meuterer MonsterExpedition NochMal NotreDame Numeri OhneFurchtUndAdel PackeisAmPol Pantheon ParisParis PiranhaPedro PuertoRico Saboteur SaeulenDerErde SanJuan SanktPetersburg SantaCruz Siedler SkullKing SpaceBob Sticheln StoneAge StreetSoccer ThurnUndTaxis Tichu Tongiaki Transamerica TurnIt UmKroneUndKragen Vabanque Venedig Verflixxt Wikinger Wizard Yinsh Zatre"
+  SET GAMELIST "11nimmt 6nimmt 7Wonders Abluxxen AllesImEimer Atlantis Attika Attribut AufAchse Backgammon Bazaar Blockers Bluff Bohnanza BohnDuell Bruegge CafeInternational CantStop Carcassonne Cartagena CastlesOfTuscany Caylus CC-JaegerUndSammler Clans CleverHochDrei Crosswise Diamant DieCrew Dizzle Dog Doppelkopf DoppeltSoClever Drachenherz Dudeln Dvonn Emerald Evolution FinstereFlure Fuersten Funkenschlag GanzSchoenClever Geister Go GoennenKoennen Grimoria Hadara Halali HalfPintHeroes Helvetia HeulDoch Imhotep Imperial ImSchutzeDerBurg Intrige Kardinal&Koenig KingdomBuilder KingLui Kingsburg Kribbeln Ligretto Manhattan Manitou MarcoPolo Medina Meuterer MonsterExpedition NochMal NotreDame Numeri OhneFurchtUndAdel PackeisAmPol Pantheon ParisParis PiranhaPedro PuertoRico Saboteur SaeulenDerErde SanJuan SanktPetersburg SantaCruz Siedler SkullKing SpaceBob Sticheln StoneAge StreetSoccer ThurnUndTaxis Tichu Tongiaki Transamerica TurnIt UmKroneUndKragen Vabanque Venedig Verflixxt Verraeter Wikinger Wizard Yinsh Zatre"
   WHEN ERROR DO error
   WHEN TIMER 3600 DO rundgang
 END
@@ -30,7 +30,7 @@ END
 # players: Summiert die Anzahl der gefundenen Spieler in den Räumen
 # resets: Anzahl der Räume, in denen ein Reset durchgeführt wurde
 ACTION rundgang
-  SET counter 1
+  SET counter 0
   SET players 0
   SET resets 0
   
