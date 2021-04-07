@@ -195,7 +195,7 @@ ACTION missinggamestopublic
   EVAL publiccnt = [publiccnt] + 1
   SET PUBLIC[publiccnt] "<table class='zirkusTable'><tr><th>Fehlendes Spiel</th></tr>"
 
-  FOR missing in [missinggames]
+  FOR missing IN [missinggames]
     BEGIN
       SET arg1 "<tr><td>[missing]</td></tr>"
       DO writeToPublic
