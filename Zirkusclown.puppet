@@ -46,7 +46,7 @@ ACTION rundgang
   SET players 0
   SET resets 0
   
-  SET PUBLIC1 "<html><head><meta charset="utf-8"/><style>h1{font-family:arial,sans-serif;font-size:20px;font-weight:bold;text-align:center}table.zirkusTable{border:2px solid #a40808;background-color:#fff;width:100%;text-align:left;border-collapse:collapse}table.zirkusTable td,table.zirkusTable th{border:1px solid #aaa;padding:4px 1px}table.zirkusTable tbody td{font-size:13px}table.zirkusTable tr:nth-child(even){background:#f5c8bf}table.zirkusTable thead{background:#a40808}table.zirkusTable thead th{font-size:16px;font-weight:700;color:#fff;text-align:center;border-left:2px solid #a40808}table.zirkusTable thead th:first-child{border-left:none}</style></head><body><h1>Raumliste Zirkus</h1><table class="zirkusTable"><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th></tr>"
+  SET PUBLIC1 "<html><head><meta charset=""utf-8""/><style>h1{font-family:arial,sans-serif;font-size:20px;font-weight:bold;text-align:center}table.zirkusTable{border:2px solid #a40808;background-color:#fff;width:100%;text-align:left;border-collapse:collapse}table.zirkusTable td,table.zirkusTable th{border:1px solid #aaa;padding:4px 1px}table.zirkusTable tbody td{font-size:13px}table.zirkusTable tr:nth-child(even){background:#f5c8bf}table.zirkusTable thead{background:#a40808}table.zirkusTable thead th{font-size:16px;font-weight:700;color:#fff;text-align:center;border-left:2px solid #a40808}table.zirkusTable thead th:first-child{border-left:none}</style></head><body><h1>Raumliste Zirkus</h1><table class=""zirkusTable""><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th></tr>"
   SET publiccnt 2
   SET PUBLIC[publiccnt] ""
   
