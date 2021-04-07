@@ -51,6 +51,7 @@ ACTION rundgang
   SET counter 0
   SET players 0
   SET resets 0
+  SET missinggames [GAMELIST]
   
   SET PUBLIC1 "<html><head><meta charset='utf-8'/><style>h1{font-family:arial,sans-serif;font-size:20px;font-weight:bold;text-align:center}table.zirkusTable{border:2px solid #a40808;background-color:#fff;width:100%;text-align:left;border-collapse:collapse}table.zirkusTable td,table.zirkusTable th{border:1px solid #aaa;padding:4px 1px}table.zirkusTable tbody td{font-size:13px}table.zirkusTable tr:nth-child(even){background:#f5c8bf}table.zirkusTable thead{background:#a40808}table.zirkusTable thead th{font-size:16px;font-weight:700;color:#fff;text-align:center;border-left:2px solid #a40808}table.zirkusTable thead th:first-child{border-left:none}</style></head><body><h1>Raumliste Zirkus</h1><table class='zirkusTable'><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th><th>Aktiv</th></tr>"
   SET publiccnt 2
@@ -99,7 +100,12 @@ ACTION rundgang
   -- Im Zirkus spielen aktuell [players] Personen. [resets] Räume zurückgesetzt.
   
   EVAL publiccnt = [publiccnt] + 1
-  SET PUBLIC[publiccnt] "</table></body></html>"
+  SET PUBLIC[publiccnt] "</table>"
+  
+  DO missinggamestopublic
+  
+  EVAL publiccnt = [publiccnt] + 1
+  SET PUBLIC[publiccnt] "</body></html>"
   
   WHILE [publiccnt] <= 100
     BEGIN
@@ -131,9 +137,11 @@ END
 # IN spiel: Spiel im aktuellen Raum
 # IN players: Counter für die Anzahl der Spieler 
 # IN resets: Counter für die Anzahl der zurückgesetzten Räume 
+# IN/OUT missinggames: Liste von Spielen, ein gefundenes Spiel wird aus der Liste entfernt
 ACTION raumreset
   IF [spiel] INLIST [GAMELIST]
     BEGIN
+      REMOVELIST missinggames [spiel]
       DO spielerzahl
       IF [x] > 0
         BEGIN
@@ -172,23 +180,47 @@ ACTION roominfotopublic
   SET arg1 [NAME]
   DO htmlEncode
   LOCAL raumname = [out1]
-  
+
   SET arg1 [OWNER]
   DO htmlEncode
   LOCAL raumowner = [out1]
-  
-  LOCAL currentroomtext = "<tr><td>[raum]</td><td>[raumname]</td><td>[spiel]</td><td>[raumowner]</td><td>[ACTIVE]</td></tr>"
+
+  SET arg1 "<tr><td>[raum]</td><td>[raumname]</td><td>[spiel]</td><td>[raumowner]</td><td>[ACTIVE]</td></tr>"
+  DO writeToPublic
+END
+
+# Schreibt missinggames in eine Tabelle
+# publiccnt muss gesetzt sein
+ACTION missinggamestopublic
+  EVAL publiccnt = [publiccnt] + 1
+  SET PUBLIC[publiccnt] "<table class='zirkusTable'><tr><th>Fehlendes Spiel</th></tr>"
+
+  FOR missing in [missinggames]
+    BEGIN
+      SET arg1 "<tr><td>[missing]</td></tr>"
+      DO writeToPublic
+    END
+
+  EVAL publiccnt = [publiccnt] + 1
+  SET PUBLIC[publiccnt] "</table>"
+END
+
+# Schreibt text in die public-Variablen
+# IN/OUT publiccnt der aktuelle public-Zähler
+# IN arg1: Der zu schreibende Text
+ACTION writeToPublic
+  LOCAL currenttext = [arg1]
   EVAL publength = LENGTH [PUBLIC[publiccnt]]
-  EVAL currentroomlength = LENGTH [currentroomtext]
-  EVAL totallength = [publength] + [currentroomlength]
-  
+  EVAL currenttextlength = LENGTH [currenttext]
+  EVAL totallength = [publength] + [currenttextlength]
+
   IF [totallength] > 4500
     BEGIN
       EVAL publiccnt = [publiccnt] + 1
       SET PUBLIC[publiccnt] ""
     END
 
-  SET PUBLIC[publiccnt] "[PUBLIC[publiccnt]] [currentroomtext]"
+  SET PUBLIC[publiccnt] "[PUBLIC[publiccnt]] [currenttext]"
 END
 
 # Ersetzt in einem String Sonderzeichen duch HTML-Encodierte Zeichen
@@ -204,6 +236,9 @@ ACTION htmlEncode
   REPLACE tmp "Ü" "&Uuml;"
   REPLACE tmp "ß" "&szlig;"  
   REPLACE tmp "é" "&eacute;"
+  REPLACE tmp "É" "&Eacute;"
+  REPLACE tmp "è" "&egrave;"
+  REPLACE tmp "È" "&Egrave;"
   SET out1 [tmp]
 END
 
