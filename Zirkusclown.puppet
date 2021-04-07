@@ -15,7 +15,7 @@ PUPPET Zirkusclown
 @list: listebefehle
 @start: rundgang
 @clear: clear
-@listskipped: listskipped
+@skipped: listskipped
 
 ACTION start
   SET HOME C177
@@ -24,12 +24,16 @@ ACTION start
   SET ROOMSTOSKIP ""
   WHEN ERROR DO error
   WHEN TIMER 3600 DO rundgang
+  WHEN KEYWORD "!list" IN TELL DO listebefehle
+  WHEN KEYWORD "!start" IN TELL DO rundgang
+  WHEN KEYWORD "!clear" IN TELL DO clear
+  WHEN KEYWORD "!skipped" IN TELL DO listskipped
 END
 
 ACTION listebefehle
   -- @start Starte den Aufräumvorgang
   -- @clear Setze die Liste der übersprungenen Räume zurück
-  -- @listskipped Listet die übersprungenen Räume auf
+  -- @skipped Listet die übersprungenen Räume auf
 END
 
 ACTION clear
@@ -37,7 +41,7 @@ ACTION clear
 END
 
 ACTION listskipped
-  -- [ROOMSTOSKIP]
+  -- "Übersprunngen: " [ROOMSTOSKIP]
 END
 
 # counter: Zähler für die While-Schleife
@@ -48,7 +52,7 @@ ACTION rundgang
   SET players 0
   SET resets 0
   
-  SET PUBLIC1 "<html><head><meta charset='utf-8'/><style>h1{font-family:arial,sans-serif;font-size:20px;font-weight:bold;text-align:center}table.zirkusTable{border:2px solid #a40808;background-color:#fff;width:100%;text-align:left;border-collapse:collapse}table.zirkusTable td,table.zirkusTable th{border:1px solid #aaa;padding:4px 1px}table.zirkusTable tbody td{font-size:13px}table.zirkusTable tr:nth-child(even){background:#f5c8bf}table.zirkusTable thead{background:#a40808}table.zirkusTable thead th{font-size:16px;font-weight:700;color:#fff;text-align:center;border-left:2px solid #a40808}table.zirkusTable thead th:first-child{border-left:none}</style></head><body><h1>Raumliste Zirkus</h1><table class='zirkusTable'><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th></tr>"
+  SET PUBLIC1 "<html><head><meta charset='utf-8'/><style>h1{font-family:arial,sans-serif;font-size:20px;font-weight:bold;text-align:center}table.zirkusTable{border:2px solid #a40808;background-color:#fff;width:100%;text-align:left;border-collapse:collapse}table.zirkusTable td,table.zirkusTable th{border:1px solid #aaa;padding:4px 1px}table.zirkusTable tbody td{font-size:13px}table.zirkusTable tr:nth-child(even){background:#f5c8bf}table.zirkusTable thead{background:#a40808}table.zirkusTable thead th{font-size:16px;font-weight:700;color:#fff;text-align:center;border-left:2px solid #a40808}table.zirkusTable thead th:first-child{border-left:none}</style></head><body><h1>Raumliste Zirkus</h1><table class='zirkusTable'><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th><th>Aktiv</th></tr>"
   SET publiccnt 2
   SET PUBLIC[publiccnt] ""
   
@@ -63,7 +67,6 @@ ACTION rundgang
           GETROOMINFO
           IF [ROOM] == [zielraum]
             BEGIN
-              DO roominfotopublic
               # -- Ich bin jetzt in Raum [ROOM] mit Spiel [GAME]
               IF LISTLENGTH [GAME] > 1
                 BEGIN
@@ -72,7 +75,9 @@ ACTION rundgang
               ELSE
                 BEGIN
                   SET spiel [GAME]
+                  SET raum [ROOM]
                   DO raumreset
+                  DO roominfotopublic
                 END
             END
           ELSE # Raum existiert nicht
@@ -96,7 +101,7 @@ ACTION rundgang
   EVAL publiccnt = [publiccnt] + 1
   SET PUBLIC[publiccnt] "</table></body></html>"
   
-  WHILE [publiccnt] <= 25
+  WHILE [publiccnt] <= 100
     BEGIN
       EVAL publiccnt = [publiccnt] + 1
       UNSET PUBLIC[publiccnt]
@@ -112,9 +117,11 @@ ACTION subraeume
   SET sumraum 1
   FOR spiel IN [GAME]
     BEGIN
-      # -- Spiel [spiel] in Raum [zielraum]-[sumraum]
-      >> /room [zielraum]-[sumraum]
+      SET raum [zielraum]-[sumraum]
+      # -- Spiel [spiel] in Raum [raum]
+      >> /room [raum]
       DO raumreset
+      DO roominfotopublic
       EVAL sumraum = [sumraum] + 1
     END
 END
@@ -162,7 +169,15 @@ END
 # GETROOMINFO muss zuvor aufgerufen werden
 # publiccnt muss gesetzt sein
 ACTION roominfotopublic
-  LOCAL currentroomtext = "<tr><td>[ROOM]</td><td>[NAME]</td><td>[GAME]</td><td>[OWNER]</td></tr>"
+  SET arg1 [NAME]
+  DO htmlEncode
+  LOCAL raumname [out1]
+  
+  SET arg1 [OWNER]
+  DO htmlEncode
+  LOCAL raumowner [out1]
+  
+  LOCAL currentroomtext = "<tr><td>[raum]</td><td>[raumname]</td><td>[spiel]</td><td>[raumowner]</td><td>[ACTIVE]</td></tr>"
   EVAL publength = LENGTH [PUBLIC[publiccnt]]
   EVAL currentroomlength = LENGTH [currentroomtext]
   EVAL totallength = [publength] + [currentroomlength]
@@ -174,6 +189,22 @@ ACTION roominfotopublic
     END
 
   SET PUBLIC[publiccnt] "[PUBLIC[publiccnt]] [currentroomtext]"
+END
+
+# Ersetzt in einem String Sonderzeichen duch HTML-Encodierte Zeichen
+# IN arg1: Der zu bearbeitende String
+# OUT out1: Der bearbeitete String
+ACTION htmlEncode
+  LOCAL tmp = [arg1]
+  REPLACE tmp "ä" "&auml;"
+  REPLACE tmp "ö" "&ouml;"
+  REPLACE tmp "ü" "&uuml;"
+  REPLACE tmp "Ä" "&Auml;"
+  REPLACE tmp "Ö" "&Ouml;"
+  REPLACE tmp "Ü" "&Uuml;"
+  REPLACE tmp "ß" "&szlig;"  
+  REPLACE tmp "é" "&eacute;"
+  SET out1 = [tmp]
 END
 
 ACTION error
