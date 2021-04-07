@@ -18,12 +18,24 @@ PUPPET Zirkusclown
 ACTION start
   SET HOME C177
   SET GAMELIST "11nimmt 6nimmt 7Wonders Abluxxen AllesImEimer Atlantis Attika Attribut AufAchse Backgammon Bazaar Blockers Bluff Bohnanza BohnDuell Bruegge CafeInternational CantStop Carcassonne Cartagena CastlesOfTuscany Caylus CC-JaegerUndSammler Clans CleverHochDrei Crosswise Diamant DieCrew Dizzle Dog Doppelkopf DoppeltSoClever Drachenherz Dudeln Dvonn Emerald Evolution FinstereFlure Fuersten Funkenschlag GanzSchoenClever Geister Go GoennenKoennen Grimoria Hadara Halali HalfPintHeroes Helvetia HeulDoch Imhotep Imperial ImSchutzeDerBurg Intrige Kardinal&Koenig KingdomBuilder KingLui Kingsburg Kribbeln Ligretto Manhattan Manitou MarcoPolo Medina Meuterer MonsterExpedition NochMal NotreDame Numeri OhneFurchtUndAdel PackeisAmPol Pantheon ParisParis PiranhaPedro PuertoRico Saboteur SaeulenDerErde SanJuan SanktPetersburg SantaCruz Siedler SkullKing SpaceBob Sticheln StoneAge StreetSoccer ThurnUndTaxis Tichu Tongiaki Transamerica TurnIt UmKroneUndKragen Vabanque Venedig Verflixxt Verraeter Wikinger Wizard Yinsh Zatre"
+  # wird mit dem täglichen puppetstart neu befüllt
+  SET ROOMSTOSKIP ""
   WHEN ERROR DO error
   WHEN TIMER 3600 DO rundgang
 END
 
 ACTION listebefehle
   -- @start Starte den Aufräumvorgang
+  -- @clear Setze die Liste der übersprungenen Räume zurück
+  -- @listskipped Listet die übersprungenen Räume auf
+END
+
+ACTION clear
+  SET ROOMSTOSKIP ""
+END
+
+ACTION listskipped
+  -- [ROOMSTOSKIP]
 END
 
 # counter: Zähler für die While-Schleife
@@ -43,27 +55,34 @@ ACTION rundgang
   WHILE [counter] <= 180
     BEGIN
       SET zielraum "C177-[counter]"
-      >> /room [zielraum]              # Wechsel in den nächsten Raum
-      GETROOMINFO
-      IF [ROOM] == [zielraum]
+      IF NOT [zielraum] INLIST [ROOMSTOSKIP]
         BEGIN
-          DO roominfotopublic
-          # -- Ich bin jetzt in Raum [ROOM] mit Spiel [GAME]
-          IF LISTLENGTH [GAME] > 1
+          >> /room [zielraum]              # Wechsel in den nächsten Raum
+          GETROOMINFO
+          IF [ROOM] == [zielraum]
             BEGIN
-              DO subraeume
+              DO roominfotopublic
+              # -- Ich bin jetzt in Raum [ROOM] mit Spiel [GAME]
+              IF LISTLENGTH [GAME] > 1
+                BEGIN
+                  DO subraeume
+                END
+              ELSE
+                BEGIN
+                  SET spiel [GAME]
+                  DO raumreset
+                END
             END
-          ELSE
+          ELSE # Raum existiert nicht
             BEGIN
-              SET spiel [GAME]
-              DO raumreset
+              # -- [zielraum] existiert nicht
+              ADDLIST ROOMSTOSKIP "[zielraum]"
             END
         END
-      ELSE # Raum existiert nicht
+      ELSE
         BEGIN
-          # -- [zielraum] existiert nicht
+          # -- [zielraum] wurde übersprungen
         END
-
       EVAL counter = [counter] + 1
       SLEEP 3
     END  # END WHILE
