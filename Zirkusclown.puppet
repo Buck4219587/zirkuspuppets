@@ -36,6 +36,7 @@ ACTION rundgang
   
   SET PUBLIC1 "<html><body><h1>Raumliste Zirkus</h1><table><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th></tr>"
   SET publiccnt 2
+  SET PUBLIC[publiccnt] ""
   
   -- Fange an aufzuräumen
   
