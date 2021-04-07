@@ -171,11 +171,11 @@ END
 ACTION roominfotopublic
   SET arg1 [NAME]
   DO htmlEncode
-  LOCAL raumname [out1]
+  LOCAL raumname = [out1]
   
   SET arg1 [OWNER]
   DO htmlEncode
-  LOCAL raumowner [out1]
+  LOCAL raumowner = [out1]
   
   LOCAL currentroomtext = "<tr><td>[raum]</td><td>[raumname]</td><td>[spiel]</td><td>[raumowner]</td><td>[ACTIVE]</td></tr>"
   EVAL publength = LENGTH [PUBLIC[publiccnt]]
@@ -204,7 +204,7 @@ ACTION htmlEncode
   REPLACE tmp "Ü" "&Uuml;"
   REPLACE tmp "ß" "&szlig;"  
   REPLACE tmp "é" "&eacute;"
-  SET out1 = [tmp]
+  SET out1 [tmp]
 END
 
 ACTION error
