@@ -117,7 +117,7 @@ ACTION subraeume
   SET sumraum 1
   FOR spiel IN [GAME]
     BEGIN
-      SET raum [zielraum]-[sumraum]
+      SET raum "[zielraum]-[sumraum]"
       # -- Spiel [spiel] in Raum [raum]
       >> /room [raum]
       DO raumreset
