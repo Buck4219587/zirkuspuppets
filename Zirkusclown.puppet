@@ -96,7 +96,7 @@ ACTION rundgang
     END  # END WHILE
   
   >> /room [HOME]
-  >> /ctell Im Zirkus spielen aktuell [players] Personen. [resets] Räume zurückgesetzt.
+  >> /ctell [resets] Räume zurückgesetzt. Uff.
   -- Im Zirkus spielen aktuell [players] Personen. [resets] Räume zurückgesetzt.
   
   EVAL publiccnt = [publiccnt] + 1
