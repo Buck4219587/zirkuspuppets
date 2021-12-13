@@ -19,7 +19,7 @@ PUPPET Zirkusclown
 
 ACTION start
   SET HOME C177
-  SET GAMELIST "11nimmt 6nimmt 7Wonders Abluxxen AllesImEimer Atlantis Attika Attribut AufAchse Backgammon Bazaar Blaetterrauschen Blockers Bluff Bohnanza BohnDuell Bruegge CafeInternational CantStop Carcassonne Cartagena CastlesOfTuscany Caylus CC-JaegerUndSammler Clans CleverHochDrei Crosswise Diamant DieCrew Dizzle Dog Doppelkopf DoppeltSoClever Drachenherz Dudeln Dvonn Emerald Evolution Explorers FinstereFlure Fuersten Funkenschlag GanzSchoenClever Geister Go GoennenKoennen Grimoria Hadara Halali HalfPintHeroes Helvetia HeulDoch Imhotep Imperial ImSchutzeDerBurg Intrige Kardinal&Koenig KingdomBuilder KingLui Kingsburg KrassKariert Kribbeln Ligretto LionsOfLydia Manhattan Manitou MarcoPolo Medina Meuterer Milestones Monasterium MonsterExpedition NochMal NotreDame Numeri OhneFurchtUndAdel PackeisAmPol Pantheon ParisParis PiranhaPedro PuertoRico Saboteur SaeulenDerErde SanJuan SanktPetersburg SantaCruz Set Siedler SkullKing SpaceBob Sticheln StoneAge StreetSoccer ThurnUndTaxis Tichu Tongiaki Transamerica Tulpenfieber TurnIt UmKroneUndKragen Vabanque Venedig Verflixxt Verraeter Wikinger Wizard Yinsh Zatre"
+  SET GAMELIST "11nimmt 6nimmt 7Wonders Abluxxen AllesImEimer Atlantis Attika Attribut AufAchse Backgammon Bazaar Blaetterrauschen Blockers Bluff Bohnanza BohnDuell Bruegge CafeInternational CantStop Carcassonne Cartagena CastlesOfTuscany Caylus CC-JaegerUndSammler Clans CleverHochDrei Crosswise Diamant DieCrew Dizzle Dog Doppelkopf DoppeltSoClever Drachenherz Dudeln Dvonn Emerald Evolution Explorers FinstereFlure Fuersten Funkenschlag GanzSchoenClever Geister Go GoennenKoennen Grimoria Hadara Halali HalfPintHeroes Helvetia HeulDoch Imhotep Imperial ImSchutzeDerBurg Intrige Kardinal&Koenig KingdomBuilder KingLui Kingsburg KrassKariert Kribbeln LessIsMore Ligretto LionsOfLydia Manhattan Manitou MarcoPolo Medina Meuterer Milestones Monasterium MonsterExpedition NochMal NotreDame Numeri OhneFurchtUndAdel PackeisAmPol Pantheon ParisParis PiranhaPedro PuertoRico Saboteur SaeulenDerErde SanJuan SanktPetersburg SantaCruz Set Siedler SkullKing SpaceBob Sticheln StoneAge StreetSoccer ThurnUndTaxis Tichu Tongiaki Transamerica Tulpenfieber TurnIt UmKroneUndKragen Vabanque Venedig Verflixxt Verraeter Wikinger Wizard Yinsh Zatre"
   # wird mit dem täglichen puppetstart neu befüllt
   SET ROOMSTOSKIP ""
   WHEN ERROR DO error
@@ -96,7 +96,7 @@ ACTION rundgang
     END  # END WHILE
   
   >> /room [HOME]
-  >> /ctell [resets] Räume zurückgesetzt. Uff.
+  >> /ctell [resets] Räume zurückgesetzt. 
   -- Im Zirkus spielen aktuell [players] Personen. [resets] Räume zurückgesetzt.
   
   EVAL publiccnt = [publiccnt] + 1
