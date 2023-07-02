@@ -52,14 +52,17 @@ ACTION rundgang
   SET players 0
   SET resets 0
   SET missinggames [GAMELIST]
+  # Fix: Biberbande gibt es nicht mehr, nur wegen SMLB in der Liste
+  REMOVELIST missinggames "Biberbande"
   
-  SET PUBLIC1 "<html><head><meta charset='utf-8'/><style>h1{font-family:arial,sans-serif;font-size:20px;font-weight:bold;text-align:center}table.zirkusTable{border:2px solid #a40808;background-color:#fff;width:100%;text-align:left;border-collapse:collapse}table.zirkusTable td,table.zirkusTable th{border:1px solid #aaa;padding:4px 1px}table.zirkusTable tbody td{font-size:13px}table.zirkusTable tr:nth-child(even){background:#f5c8bf}table.zirkusTable thead{background:#a40808}table.zirkusTable thead th{font-size:16px;font-weight:700;color:#fff;text-align:center;border-left:2px solid #a40808}table.zirkusTable thead th:first-child{border-left:none}</style></head><body><h1>Raumliste Zirkus</h1><table class='zirkusTable'><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th><th>Aktiv</th></tr>"
-  SET publiccnt 2
+  SET PUBLIC1 "<html><head><meta charset='utf-8'/><style>div.button{padding:4px;}div.propmenu{font-size:12;font-family:ui-monospace;background-color:ghostwhite;}button.prop{font-size:18px;background-color:ff6666;padding:10px 28px;border-radius:0px;border:none;color:white;}h1{font-family:arial,sans-serif;font-size:20px;font-weight:bold;text-align:center}table.zirkusTable{border:2px solid #a40808;background-color:#fff;width:100%;text-align:left;border-collapse:collapse}table.zirkusTable td,table.zirkusTable th{border:1px solid #aaa;padding:4px 1px}table.zirkusTable tbody td{font-size:13px}table.zirkusTable tr:nth-child(even){background:#f5c8bf}table.zirkusTable thead{background:#a40808}table.zirkusTable thead th{font-size:16px;font-weight:700;color:#fff;text-align:center;border-left:2px solid #a40808}table.zirkusTable thead th:first-child{border-left:none}</style></head><body><h1>Raumliste Zirkus</h1><table class='zirkusTable' id='raumliste'><tbody><tr><th>Raum</th><th>Name</th><th>Spiel</th><th>Besitzer</th><th>Aktiv</th></tr>"
+  SET PUBLIC2 "<script>function menustring(e,n){var r='# Menu ['+e+']\n',t=Array.from(n.keys()).sort();for(game of t)for(room of n.get(game))r+=e+'-'+game+' = */game '+room+'\n';return r}function genmenu(){var e=document.getElementById('raumliste'),n=document.getElementById('propmenu'),r=new Map,t=new Map,s=new Map;for(let i of e.rows){var u=i.cells[4].innerText,o=i.cells[0].innerText,f=i.cells[2].innerText;if('TRUE'===u&&f.length>0){var l=f.substring(0,1).toLowerCase();if(l<='d')var a=r;else if(l<='o')var a=t;else if(l<='z')var a=s;a.has(f)||a.set(f,new Set),a.get(f).add(o)}}n.innerText=menustring('MenuZirkusMU_A_D',r)+'\n'+menustring('MenuZirkusMU_E_O',t)+'\n'+menustring('MenuZirkusMU_P_Z',s)+'\n'}</script><div class='button'><button class='prop' onclick='genmenu()'>Prop Men&uuml; erstellen</button></div><div class='propmenu' id='propmenu'></div>"
+  SET publiccnt 3
   SET PUBLIC[publiccnt] ""
   
   -- Fange an aufzuräumen
   
-  WHILE [counter] <= 180
+  WHILE [counter] <= 200
     BEGIN
       SET zielraum "C177-[counter]"
       IF NOT [zielraum] INLIST [ROOMSTOSKIP]
@@ -76,6 +79,11 @@ ACTION rundgang
               ELSE
                 BEGIN
                   SET spiel [GAME]
+                  # Fix: SMLB taucht als Biberbande auf
+                  IF spiel == "Biberbande"
+                    BEGIN
+                      SET spiel "SuperMegaLuckyBox"
+                    END
                   SET raum [ROOM]
                   DO raumreset
                   DO roominfotopublic
