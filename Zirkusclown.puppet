@@ -80,7 +80,7 @@ ACTION rundgang
                 BEGIN
                   SET spiel [GAME]
                   # Fix: SMLB taucht als Biberbande auf
-                  IF spiel == "Biberbande"
+                  IF [spiel] == "Biberbande"
                     BEGIN
                       SET spiel "SuperMegaLuckyBox"
                     END
@@ -132,7 +132,7 @@ ACTION subraeume
   FOR spiel IN [GAME]
     BEGIN
       # Fix: SMLB taucht als Biberbande auf
-      IF spiel == "Biberbande"
+      IF [spiel] == "Biberbande"
         BEGIN
           SET spiel "SuperMegaLuckyBox"
         END
