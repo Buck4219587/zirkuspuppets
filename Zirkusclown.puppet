@@ -114,9 +114,15 @@ ACTION rundgang
   SET PUBLIC[publiccnt] "</tbody></table></div>"
   
   DO missinggamestopublic
-  
+
+  GETDATE
+  IF [HOUR] < 10
+    SET HOUR "0[HOUR]"
+  IF [MIN] < 10
+    SET MIN "0[MIN]"
+
   EVAL publiccnt = [publiccnt] + 1
-  SET PUBLIC[publiccnt] "</body></html>"
+  SET PUBLIC[publiccnt] "<div class='segment'>Last run: [DAY].[MONTH] [HOUR]:[MIN]</div></body></html>"
   
   WHILE [publiccnt] <= 100
     BEGIN
