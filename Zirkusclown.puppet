@@ -211,7 +211,7 @@ ACTION roominfotopublic
   LOCAL isspiel = "FALSE"
   IF [spiel] INLIST [GAMELIST]
     BEGIN
-      isspiel = "TRUE"
+      SET isspiel "TRUE"
     END
 
   SET arg1 "<tr><td>[raum]</td><td>[raumname]</td><td>[spiel]</td><td>[raumowner]</td><td>[isspiel]</td></tr>"
